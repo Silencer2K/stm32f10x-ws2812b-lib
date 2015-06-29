@@ -4,7 +4,11 @@
 
 void HSV2RGB(HSV_t *hsv, RGB_t *rgb)
 {
-    if (!hsv->s)
+    if (!hsv->v)
+    {
+        rgb->r = rgb->g = rgb->b = 0;
+    }
+    else if (!hsv->s)
     {
         rgb->r = rgb->g = rgb->b = hsv->v;
     }
