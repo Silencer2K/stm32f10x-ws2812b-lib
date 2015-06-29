@@ -3,7 +3,6 @@ STM32F10x WS2812B library
 
 Synopsis:
 
-    #include <stm32f10x.h>
     #include "ws2812b.h"
 
     #define NUM_LEDS    300
