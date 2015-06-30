@@ -56,10 +56,7 @@ static void SrcFilterRGB(void **src, PWM_t **pwm, uint16_t *count, uint16_t size
 
     while (size--)
     {
-        RGB2PWM(rgb, p);
-
-        rgb++;
-        p++;
+        RGB2PWM(rgb++, p++);
     }
 
     *src = rgb;
@@ -77,11 +74,8 @@ static void SrcFilterHSV(void **src, PWM_t **pwm, uint16_t *count, uint16_t size
     {
         RGB_t rgb;
 
-        HSV2RGB(hsv, &rgb);
-        RGB2PWM(&rgb, p);
-
-        hsv++;
-        p++;
+        HSV2RGB(hsv++, &rgb);
+        RGB2PWM(&rgb, p++);
     }
 
     *src = hsv;
