@@ -36,6 +36,17 @@ static void SrcFilterNull(void **src, PWM_t **pwm, uint16_t *count, uint16_t siz
     *pwm += size;
 }
 
+static void RGB2PWM(RGB_t *rgb, PWM_t *pwm)
+{
+    int i;
+    for (i = 0; i < 8; i++)
+    {
+        pwm->r[i] = rgb->r & (128 >> i) ? WS2812B_PULSE_HIGH : WS2812B_PULSE_LOW;
+        pwm->g[i] = rgb->g & (128 >> i) ? WS2812B_PULSE_HIGH : WS2812B_PULSE_LOW;
+        pwm->b[i] = rgb->b & (128 >> i) ? WS2812B_PULSE_HIGH : WS2812B_PULSE_LOW;
+    }
+}
+
 static void SrcFilterRGB(void **src, PWM_t **pwm, uint16_t *count, uint16_t size)
 {
     RGB_t *rgb = *src;
@@ -45,13 +56,7 @@ static void SrcFilterRGB(void **src, PWM_t **pwm, uint16_t *count, uint16_t size
 
     while (size--)
     {
-        int i;
-        for (i = 0; i < 8; i++)
-        {
-            p->r[i] = rgb->r & (128 >> i) ? WS2812B_PULSE_HIGH : WS2812B_PULSE_LOW;
-            p->g[i] = rgb->g & (128 >> i) ? WS2812B_PULSE_HIGH : WS2812B_PULSE_LOW;
-            p->b[i] = rgb->b & (128 >> i) ? WS2812B_PULSE_HIGH : WS2812B_PULSE_LOW;
-        }
+        RGB2PWM(rgb, p);
 
         rgb++;
         p++;
@@ -73,14 +78,7 @@ static void SrcFilterHSV(void **src, PWM_t **pwm, uint16_t *count, uint16_t size
         RGB_t rgb;
 
         HSV2RGB(hsv, &rgb);
-
-        int i;
-        for (i = 0; i < 8; i++)
-        {
-            p->r[i] = rgb.r & (128 >> i) ? WS2812B_PULSE_HIGH : WS2812B_PULSE_LOW;
-            p->g[i] = rgb.g & (128 >> i) ? WS2812B_PULSE_HIGH : WS2812B_PULSE_LOW;
-            p->b[i] = rgb.b & (128 >> i) ? WS2812B_PULSE_HIGH : WS2812B_PULSE_LOW;
-        }
+        RGB2PWM(&rgb, p);
 
         hsv++;
         p++;

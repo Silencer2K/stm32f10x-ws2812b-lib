@@ -3,20 +3,12 @@
 
 #include <stdint.h>
 
-#if defined(__ICCARM__)
-__packed struct RGB
-#else
-struct __attribute__((packed)) RGB
-#endif
+struct RGB
 {
     uint8_t r, g, b;
 };
 
-#if defined(__ICCARM__)
-__packed struct HSV
-#else
-struct __attribute__((packed)) HSV
-#endif
+struct HSV
 {
     int16_t h;
     uint8_t s, v;
