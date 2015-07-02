@@ -61,27 +61,27 @@ static void SrcFilterNull(void **src, PWM_t **pwm, uint16_t *count, uint16_t siz
 
 static void RGB2PWM(RGB_t *rgb, PWM_t *pwm)
 {
-    int i;
-    for (i = 0; i < 8; i++)
-    {
-        uint8_t r, g, b;
+    uint8_t r, g, b;
 
 #ifdef WS2812B_USE_GAMMA_CORRECTION
 #ifdef WS2812B_USE_PRECALCULATED_GAMMA_TABLE
-        r = LEDGamma[rgb->r];
-        g = LEDGamma[rgb->g];
-        b = LEDGamma[rgb->b];
+    r = LEDGamma[rgb->r];
+    g = LEDGamma[rgb->g];
+    b = LEDGamma[rgb->b];
 #else
-        r = LEDGamma(rgb->r);
-        g = LEDGamma(rgb->g);
-        b = LEDGamma(rgb->b);
+    r = LEDGamma(rgb->r);
+    g = LEDGamma(rgb->g);
+    b = LEDGamma(rgb->b);
 #endif
 #else
-        r = rgb->r;
-        g = rgb->g;
-        b = rgb->b;
+    r = rgb->r;
+    g = rgb->g;
+    b = rgb->b;
 #endif
 
+    int i;
+    for (i = 0; i < 8; i++)
+    {
         pwm->r[i] = r & (128 >> i) ? WS2812B_PULSE_HIGH : WS2812B_PULSE_LOW;
         pwm->g[i] = g & (128 >> i) ? WS2812B_PULSE_HIGH : WS2812B_PULSE_LOW;
         pwm->b[i] = b & (128 >> i) ? WS2812B_PULSE_HIGH : WS2812B_PULSE_LOW;
