@@ -14,8 +14,8 @@
 #define WS2812B_BUFFER_SIZE     60
 #define WS2812B_START_SIZE      2
 
-#define WS2812B_ABP1_RCC        RCC_APB1Periph_TIM4
-#define WS2812B_ABP2_RCC        RCC_APB2Periph_GPIOB
+#define WS2812B_APB1_RCC        RCC_APB1Periph_TIM4
+#define WS2812B_APB2_RCC        RCC_APB2Periph_GPIOB
 
 #define WS2812B_AHB_RCC         RCC_AHBPeriph_DMA1
 

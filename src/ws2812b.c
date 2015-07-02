@@ -210,8 +210,8 @@ volatile uint8_t ws2812b_Flags;
 void ws2812b_Init(void)
 {
     // Turn on peripheral clock
-    RCC_APB1PeriphClockCmd(WS2812B_ABP1_RCC, ENABLE);
-    RCC_APB2PeriphClockCmd(WS2812B_ABP2_RCC, ENABLE);
+    RCC_APB1PeriphClockCmd(WS2812B_APB1_RCC, ENABLE);
+    RCC_APB2PeriphClockCmd(WS2812B_APB2_RCC, ENABLE);
 
     RCC_AHBPeriphClockCmd(WS2812B_AHB_RCC, ENABLE);
 
@@ -256,7 +256,7 @@ void ws2812b_Init(void)
 
     //DMA_StructInit(&DMA_InitStruct);
 
-    DMA_InitStruct.DMA_PeripheralBaseAddr = (uint32_t) & WS2812B_TIM->CCR1;
+    DMA_InitStruct.DMA_PeripheralBaseAddr = (uint32_t) &WS2812B_TIM->CCR1;
     DMA_InitStruct.DMA_MemoryBaseAddr = (uint32_t) DMABuffer;
     DMA_InitStruct.DMA_DIR = DMA_DIR_PeripheralDST;
     DMA_InitStruct.DMA_BufferSize = sizeof(DMABuffer) / sizeof(uint16_t);
