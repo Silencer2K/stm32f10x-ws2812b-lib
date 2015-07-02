@@ -26,6 +26,7 @@
 #define WS2812B_TIM_OCINIT      TIM_OC1Init
 #define WS2812B_TIM_OCPRELOAD   TIM_OC1PreloadConfig
 #define WS2812B_TIM_DMA_CC      TIM_DMA_CC1
+#define WS2812B_TIM_DMA_REF     TIM4->CC1
 
 #define WS2812B_DMA             DMA1
 #define WS2812B_DMA_CHANNEL     DMA1_Channel1
