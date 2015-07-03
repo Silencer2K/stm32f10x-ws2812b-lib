@@ -69,13 +69,11 @@ static void SrcFilterNull(void **src, PWM_t **pwm, uint16_t *count, uint16_t siz
 
 static void RGB2PWM(RGB_t *rgb, PWM_t *pwm)
 {
-    uint8_t r, g, b, mask;
+    uint8_t r = LEDGamma(rgb->r);
+    uint8_t g = LEDGamma(rgb->g);
+    uint8_t b = LEDGamma(rgb->b);
 
-    r = LEDGamma(rgb->r);
-    g = LEDGamma(rgb->g);
-    b = LEDGamma(rgb->b);
-
-    mask = 128;
+    uint8_t mask = 128;
 
     int i;
     for (i = 0; i < 8; i++)
@@ -179,9 +177,6 @@ static void DMASendNext(PWM_t *pwm, PWM_t *end)
         // Rest of buffer
         if (pwm < end)
             SrcFilterNull(NULL, &pwm, NULL, end - pwm);
-
-        // Start transfer
-        DMA_SetCurrDataCounter(WS2812B_DMA_CHANNEL, sizeof(DMABuffer) / sizeof(uint16_t));
     }
 }
 
