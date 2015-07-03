@@ -187,16 +187,16 @@ static void DMASendNext(PWM_t *pwm, PWM_t *end)
 
 void WS2812B_DMA_HANDLER(void)
 {
-    if (DMA_GetITStatus(WS2812B_DMA_IT_HT) == SET)
+    if (DMA_GetITStatus(WS2812B_DMA_IT_HT) != RESET)
     {
-        DMASendNext(DMABuffer, &DMABuffer[WS2812B_BUFFER_SIZE / 2]);
         DMA_ClearITPendingBit(WS2812B_DMA_IT_HT);
+        DMASendNext(DMABuffer, &DMABuffer[WS2812B_BUFFER_SIZE / 2]);
     }
 
-    if (DMA_GetITStatus(WS2812B_DMA_IT_TC) == SET)
+    if (DMA_GetITStatus(WS2812B_DMA_IT_TC) != RESET)
     {
-        DMASendNext(&DMABuffer[WS2812B_BUFFER_SIZE / 2], &DMABuffer[WS2812B_BUFFER_SIZE]);
         DMA_ClearITPendingBit(WS2812B_DMA_IT_TC);
+        DMASendNext(&DMABuffer[WS2812B_BUFFER_SIZE / 2], &DMABuffer[WS2812B_BUFFER_SIZE]);
     }
 }
 
