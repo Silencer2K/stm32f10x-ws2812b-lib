@@ -255,7 +255,7 @@ void ws2812b_Init(void)
 
     //DMA_StructInit(&DMA_InitStruct);
 
-    DMA_InitStruct.DMA_PeripheralBaseAddr = (uint32_t) & WS2812B_TIM->CCR1;
+    DMA_InitStruct.DMA_PeripheralBaseAddr = (uint32_t) & WS2812B_TIM_DMA_PTR;
     DMA_InitStruct.DMA_MemoryBaseAddr = (uint32_t) DMABuffer;
     DMA_InitStruct.DMA_DIR = DMA_DIR_PeripheralDST;
     DMA_InitStruct.DMA_BufferSize = sizeof(DMABuffer) / sizeof(uint16_t);
