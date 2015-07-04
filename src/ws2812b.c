@@ -22,7 +22,7 @@ struct __attribute__((packed)) PWM
 };
 
 typedef struct PWM PWM_t;
-typedef void (SrcFilter_t)(void **, PWM_t **, uint16_t *, uint16_t);
+typedef void (SrcFilter_t)(void **, PWM_t **, int *, int);
 
 #ifdef WS2812B_USE_GAMMA_CORRECTION
 #ifdef WS2812B_USE_PRECALCULATED_GAMMA_TABLE
@@ -55,13 +55,15 @@ static inline uint8_t LEDGamma(uint8_t v)
 #endif
 }
 
+static volatile int DMABusy;
+
 static PWM_t DMABuffer[WS2812B_BUFFER_SIZE];
 
 static SrcFilter_t *DMAFilter;
 static void *DMASrc;
-static uint16_t DMACount;
+static int DMACount;
 
-static void SrcFilterNull(void **src, PWM_t **pwm, uint16_t *count, uint16_t size)
+static void SrcFilterNull(void **src, PWM_t **pwm, int *count, int size)
 {
     memset(*pwm, 0, size * sizeof(PWM_t));
     *pwm += size;
@@ -86,7 +88,7 @@ static void RGB2PWM(RGB_t *rgb, PWM_t *pwm)
     }
 }
 
-static void SrcFilterRGB(void **src, PWM_t **pwm, uint16_t *count, uint16_t size)
+static void SrcFilterRGB(void **src, PWM_t **pwm, int *count, int size)
 {
     RGB_t *rgb = *src;
     PWM_t *p = *pwm;
@@ -102,7 +104,7 @@ static void SrcFilterRGB(void **src, PWM_t **pwm, uint16_t *count, uint16_t size
     *pwm = p;
 }
 
-static void SrcFilterHSV(void **src, PWM_t **pwm, uint16_t *count, uint16_t size)
+static void SrcFilterHSV(void **src, PWM_t **pwm, int *count, int size)
 {
     HSV_t *hsv = *src;
     PWM_t *p = *pwm;
@@ -121,11 +123,11 @@ static void SrcFilterHSV(void **src, PWM_t **pwm, uint16_t *count, uint16_t size
     *pwm = p;
 }
 
-static void DMASend(SrcFilter_t *filter, void *src, uint16_t count)
+static void DMASend(SrcFilter_t *filter, void *src, int count)
 {
-    if (ws2812b_IsReady())
+    if (!DMABusy)
     {
-        ws2812b_Flags |= WS2812B_FLAG_BUSY;
+        DMABusy = 1;
 
         DMAFilter = filter;
         DMASrc = src;
@@ -160,7 +162,7 @@ static void DMASendNext(PWM_t *pwm, PWM_t *end)
         TIM_Cmd(WS2812B_TIM, DISABLE);
         DMA_Cmd(WS2812B_DMA_CHANNEL, DISABLE);
 
-        ws2812b_Flags &= ~WS2812B_FLAG_BUSY;
+        DMABusy = 0;
     }
     else if (!DMACount)
     {
@@ -198,8 +200,6 @@ void WS2812B_DMA_HANDLER(void)
 //------------------------------------------------------------
 // Interface
 //------------------------------------------------------------
-
-volatile uint8_t ws2812b_Flags;
 
 void ws2812b_Init(void)
 {
@@ -281,12 +281,17 @@ void ws2812b_Init(void)
     DMA_ITConfig(WS2812B_DMA_CHANNEL, DMA_IT_HT | DMA_IT_TC, ENABLE);
 }
 
-void ws2812b_SendRGB(RGB_t *rgb, uint16_t count)
+inline int ws2812b_IsReady(void)
+{
+    return !DMABusy;
+}
+
+void ws2812b_SendRGB(RGB_t *rgb, int count)
 {
     DMASend(&SrcFilterRGB, rgb, count);
 }
 
-void ws2812b_SendHSV(HSV_t *hsv, uint16_t count)
+void ws2812b_SendHSV(HSV_t *hsv, int count)
 {
     DMASend(&SrcFilterHSV, hsv, count);
 }
