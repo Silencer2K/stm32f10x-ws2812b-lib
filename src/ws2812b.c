@@ -22,7 +22,7 @@ struct __attribute__((packed)) PWM
 };
 
 typedef struct PWM PWM_t;
-typedef void (SrcFilter_t)(void **, PWM_t **, int *, int);
+typedef void (SrcFilter_t)(void **, PWM_t **, unsigned *, unsigned);
 
 #ifdef WS2812B_USE_GAMMA_CORRECTION
 #ifdef WS2812B_USE_PRECALCULATED_GAMMA_TABLE
@@ -61,9 +61,9 @@ static PWM_t DMABuffer[WS2812B_BUFFER_SIZE];
 
 static SrcFilter_t *DMAFilter;
 static void *DMASrc;
-static int DMACount;
+static unsigned DMACount;
 
-static void SrcFilterNull(void **src, PWM_t **pwm, int *count, int size)
+static void SrcFilterNull(void **src, PWM_t **pwm, unsigned *count, unsigned size)
 {
     memset(*pwm, 0, size * sizeof(PWM_t));
     *pwm += size;
@@ -88,7 +88,7 @@ static void RGB2PWM(RGB_t *rgb, PWM_t *pwm)
     }
 }
 
-static void SrcFilterRGB(void **src, PWM_t **pwm, int *count, int size)
+static void SrcFilterRGB(void **src, PWM_t **pwm, unsigned *count, unsigned size)
 {
     RGB_t *rgb = *src;
     PWM_t *p = *pwm;
@@ -104,7 +104,7 @@ static void SrcFilterRGB(void **src, PWM_t **pwm, int *count, int size)
     *pwm = p;
 }
 
-static void SrcFilterHSV(void **src, PWM_t **pwm, int *count, int size)
+static void SrcFilterHSV(void **src, PWM_t **pwm, unsigned *count, unsigned size)
 {
     HSV_t *hsv = *src;
     PWM_t *p = *pwm;
@@ -123,7 +123,7 @@ static void SrcFilterHSV(void **src, PWM_t **pwm, int *count, int size)
     *pwm = p;
 }
 
-static void DMASend(SrcFilter_t *filter, void *src, int count)
+static void DMASend(SrcFilter_t *filter, void *src, unsigned count)
 {
     if (!DMABusy)
     {
@@ -286,12 +286,12 @@ inline int ws2812b_IsReady(void)
     return !DMABusy;
 }
 
-void ws2812b_SendRGB(RGB_t *rgb, int count)
+void ws2812b_SendRGB(RGB_t *rgb, unsigned count)
 {
     DMASend(&SrcFilterRGB, rgb, count);
 }
 
-void ws2812b_SendHSV(HSV_t *hsv, int count)
+void ws2812b_SendHSV(HSV_t *hsv, unsigned count)
 {
     DMASend(&SrcFilterHSV, hsv, count);
 }
