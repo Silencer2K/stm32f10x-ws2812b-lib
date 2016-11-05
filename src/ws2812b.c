@@ -184,6 +184,8 @@ static void DMASendNext(PWM_t *pwm, PWM_t *end)
         DMA_Cmd(WS2812B_DMA_CHANNEL, DISABLE);
 
         DMABusy = 0;
+
+        ws2812b_DMAFinished();
     }
     else if (!DMACount)
     {
@@ -315,4 +317,8 @@ void ws2812b_SendRGB(RGB_t *rgb, unsigned count)
 void ws2812b_SendHSV(HSV_t *hsv, unsigned count)
 {
     DMASend(&SrcFilterHSV, hsv, count);
+}
+
+void __attribute__((weak)) ws2812b_DMAFinished(void)
+{
 }
