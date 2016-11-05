@@ -40,7 +40,13 @@ __packed struct PWM
 struct __attribute__((packed)) PWM
 #endif
 {
+#if defined(WS2812B_WIRING_GRB)
     uint16_t g[8], r[8], b[8];
+#elif defined(WS2812B_WIRING_RGB)
+    uint16_t r[8], g[8], b[8];
+#else
+#   error Please select either RGB or GRB wiring.
+#endif
 };
 
 typedef struct PWM PWM_t;
