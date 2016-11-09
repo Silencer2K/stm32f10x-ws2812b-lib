@@ -26,11 +26,21 @@
 #include <stdint.h>
 #include "bitmap.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void ws2812b_Init(void);
 
 int ws2812b_IsReady(void);
 
 void ws2812b_SendRGB(RGB_t *rgb, unsigned count);
 void ws2812b_SendHSV(HSV_t *hsv, unsigned count);
+
+void ws2812b_DMAFinished(void);
+
+#ifdef __cplusplus
+}; // extern "C"
+#endif
 
 #endif //__WS2812B_H

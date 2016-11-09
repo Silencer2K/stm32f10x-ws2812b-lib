@@ -40,7 +40,13 @@ __packed struct PWM
 struct __attribute__((packed)) PWM
 #endif
 {
+#if defined(WS2812B_WIRING_GRB)
     uint16_t g[8], r[8], b[8];
+#elif defined(WS2812B_WIRING_RGB)
+    uint16_t r[8], g[8], b[8];
+#else
+#   error Please select either RGB or GRB wiring.
+#endif
 };
 
 typedef struct PWM PWM_t;
@@ -184,6 +190,8 @@ static void DMASendNext(PWM_t *pwm, PWM_t *end)
         DMA_Cmd(WS2812B_DMA_CHANNEL, DISABLE);
 
         DMABusy = 0;
+
+        ws2812b_DMAFinished();
     }
     else if (!DMACount)
     {
@@ -315,4 +323,8 @@ void ws2812b_SendRGB(RGB_t *rgb, unsigned count)
 void ws2812b_SendHSV(HSV_t *hsv, unsigned count)
 {
     DMASend(&SrcFilterHSV, hsv, count);
+}
+
+void __attribute__((weak)) ws2812b_DMAFinished(void)
+{
 }

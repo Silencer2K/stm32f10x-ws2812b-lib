@@ -25,6 +25,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct RGB
 {
     uint8_t r, g, b;
@@ -42,5 +46,9 @@ typedef struct HSV HSV_t;
 #define HUE(h)  ({ typeof(h) h1 = h % 360; h1 < 0 ? 360 + h1 : h1; })
 
 void HSV2RGB(HSV_t *hsv, RGB_t *rgb);
+
+#ifdef __cplusplus
+}; // extern "C"
+#endif
 
 #endif //__BITMAP_H
